@@ -1,0 +1,1016 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Happy Birthday — A Surprise for Lalitha</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+         :root {
+            --bg1: #051124;
+            --bg2: #14213d;
+            /* Use a valid background-image value; replace 'photo2.jpg' with your image file if desired */
+            background-image: url('photo2.jpg');
+            --soft: rgba(255, 255, 255, 0.07);
+            --glass: rgba(255, 255, 255, 0.06);
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            background: linear-gradient(135deg, var(--bg1), #0a2a4a);
+            color: #fff;
+            /* allow page to scroll so long final message can be read */
+            overflow: auto;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin: 0 0 10px;
+            letter-spacing: 0.2px
+        }
+        
+        p.lead {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.92);
+            margin: 0 0 20px;
+            line-height: 1.5
+        }
+        
+        .muted {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem
+        }
+        
+        .center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px
+        }
+        
+        .input {
+            width: 100%;
+            max-width: 520px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            background: transparent;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+        }
+        
+        .btn {
+            padding: 10px 18px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #ffd166, #ffb4a2);
+            border: none;
+            color: #061024;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 6px 20px rgba(255, 177, 140, 0.12)
+        }
+        
+        .small {
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 10px
+        }
+        
+        .particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none
+        }
+        
+        .spark {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff9, #ffe);
+            opacity: 0.9;
+            filter: blur(6px)
+        }
+        /* Background video container for each page */
+        
+        .page .bg-video {
+            position: absolute;
+            /* stays inside .page */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            /* behind all content */
+            pointer-events: none;
+            /* clicks pass through */
+        }
+        /* Video itself */
+        
+        .page .bg-video video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* cover the page */
+            opacity: 0.5;
+            /* semi-transparent for readability */
+            filter: brightness(0.9);
+            pointer-events: none;
+            /* don't block interactions */
+        }
+        /* Page content above video */
+        
+        .page>.center,
+        .page .qcard,
+        .page .message-box {
+            position: relative;
+            z-index: 2;
+            /* ensures content is on top */
+        }
+        
+        .floating-heart {
+            position: absolute;
+            font-size: 22px;
+            opacity: 0.95;
+            transform-origin: center center
+        }
+        
+        .page {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            min-height: 380px
+        }
+        
+        .page.active {
+            display: flex;
+            animation: fadeIn 700ms ease-out both
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(18px)
+            }
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+        
+        .qcard {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            width: 100%;
+            max-width: 680px;
+            text-align: center
+        }
+        
+        .hint {
+            margin-top: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic
+        }
+        
+        .final-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            pointer-events: none
+        }
+        
+        .final-bg img {
+            position: absolute;
+            max-width: 140%;
+            height: auto;
+            opacity: 0;
+            transform: scale(1.05);
+            transition: opacity 900ms ease, transform 900ms ease;
+            filter: brightness(0.65) saturate(1.05) blur(0.4px);
+            border-radius: 6px;
+        }
+        
+        .final-bg img.show {
+            opacity: 0.55;
+            transform: scale(1);
+            filter: brightness(0.85) saturate(1.02) blur(0);
+        }
+        /* mini background used on page1/page2 (smaller centered circular area) */
+        
+        .mini-bg {
+            position: absolute;
+            left: 50%;
+            top: 42%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            pointer-events: none;
+            width: 420px;
+            height: 420px;
+            display: block;
+            overflow: visible;
+        }
+        
+        .mini-bg img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            opacity: 0;
+            transform: scale(1.03);
+            transition: opacity 700ms ease, transform 700ms ease, filter 700ms ease;
+            filter: brightness(0.9) saturate(1.1) contrast(1.02);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        }
+        
+        .mini-bg img.show {
+            opacity: 0.9;
+            transform: scale(1);
+            filter: brightness(1.15) saturate(1.18) contrast(1.03);
+        }
+        /* ensure pages can host absolutely positioned mini-bg */
+        
+        .page {
+            position: relative;
+        }
+        /* password gate overlay */
+        
+        #pwGate {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(2, 6, 23, 0.86);
+            z-index: 99999;
+            backdrop-filter: blur(4px);
+        }
+        
+        #pwGate .pwBox {
+            width: 100%;
+            max-width: 420px;
+            padding: 22px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.02));
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            color: #fff;
+        }
+        
+        #pwGate input {
+            width: 100%;
+            padding: 10px 12px;
+            margin-top: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: transparent;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        #pwGate .pwActions {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        #pwGate .pwMsg {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7)
+        }
+    </style>
+</head>
+
+<body>
+    <!-- PASSWORD GATE: user must enter correct password to view site -->
+    <div id="pwGate" aria-hidden="false">
+        <div class="pwBox" role="dialog" aria-label="Enter password">
+            <div style="font-weight:700; font-size:1.15rem">Enter password to open</div>
+            <div style="margin-top:8px; color:rgba(255,255,255,0.75); font-size:0.95rem">Please enter the password to access this page.</div>
+            <input id="pwInput" type="password" inputmode="numeric" placeholder="Enter password" aria-label="password" />
+            <div class="pwActions">
+                <button class="btn" id="pwBtn">Open</button>
+                <button class="small" id="pwCancel" title="Cancel">Cancel</button>
+                <button class="small" id="pwHintBtn" title="Show hint">Hint</button>
+            </div>
+            <div class="pwMsg" id="pwMsg"> </div>
+        </div>
+    </div>
+    <div class="page active">
+        <!-- Background Video -->
+        <div class="bg-video">
+            <video autoplay muted loop>
+      <source src="Purple Collage Paper Happy Birthday Video.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+        </div>
+
+        <!-- Page Content -->
+        <div class="center">
+            <h1>Happy Birthday Lalitha!</h1>
+            <p class="lead">Enjoy your special day ❤️</p>
+        </div>
+    </div>
+
+
+    <div class="stage">
+        <div class="card" id="mainCard">
+            <div class="particles" id="particles"></div>
+
+            <!-- PAGE 1 -->
+            <div class="page" id="page1">
+                <!-- background video for page1 (place page1.mp4 next to this HTML) -->
+                <div class="bg-video" aria-hidden="true">
+                    <video id="page1Video" src="page1.mp4" muted loop playsinline preload="auto"></video>
+                </div>
+                <!-- small blinking background for page1 (no ids to avoid duplicates) -->
+                <div class="mini-bg blink-bg" aria-hidden="true">
+                    <img src="photo1.jpg" alt="p1-1">
+                    <img src="photo2.jpg" alt="p1-2">
+                    <img src="photo3.jpg" alt="p1-3">
+                </div>
+                <div class="center" style="z-index:3">
+                    <h1>Oyeee 😆</h1>
+                    <p class="lead">Oyeee 😆 tell me honestly — do you still get annoyed when I call you “Potti Pilla”? <br> Or have you started liking that name because it reminds you of me? 😂💛</p>
+
+                    <div class="qcard">
+                        <div style="font-weight:600;margin-bottom:10px">Quick one — what's the only nickname you call me?</div>
+                        <input class="input" id="q1input" placeholder="Type the nickname..." autocomplete="off" />
+                        <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
+                            <button class="btn" id="q1btn">Submit</button>
+                            <button class="small" id="q1hintbtn" title="Show a friendly hint">Hint</button>
+                        </div>
+                        <div class="hint" id="q1hint" style="display:none">(It's the little word you whisper when I'm being silly 😉)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 2 -->
+            <div class="page" id="page2" aria-hidden="true">
+                <!-- background video for page2 (place page2.mp4 next to this HTML) -->
+                <div class="bg-video" aria-hidden="true">
+                    <video id="page2Video" src="photo1.mp4" muted loop playsinline preload="auto"></video>
+                </div>
+                <!-- small blinking background for page2 -->
+                <div class="mini-bg blink-bg" aria-hidden="true">
+                    <img src="photo1.jpg" alt="p2-1">
+                    <img src="photo2.jpg" alt="p2-2">
+                    <img src="photo3.jpg" alt="p2-3">
+                </div>
+                <div class="center" style="z-index:3">
+                    <h1>Remember this moment…</h1>
+                    <p class="lead">When did you feel that you were missing me the most?</p>
+
+                    <div class="qcard">
+                        <div style="font-weight:600;margin-bottom:10px">Type your honest memory:</div>
+                        <input class="input" id="q2input" placeholder="e.g. inter second year..." autocomplete="off" />
+                        <div class="hint">Hint: It happened when I was not at home 😌</div>
+                        <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
+                            <button class="btn" id="q2btn">Submit</button>
+                            <button class="small" id="q2hintbtn">Need another hint</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 3 (Final Reveal) -->
+            <div class="page" id="page3" aria-hidden="true">
+                <!-- final full-size background (also a blink container) -->
+                <div class="final-bg blink-bg" id="finalBg" aria-hidden="true">
+                    <!-- Place your photos in the same folder with these exact names:
+              photo1.jpg, photo2.jpg, photo3.jpg -->
+                    <img src="photo1.jpg" id="bg1" alt="photo1">
+                    <img src="photo2.jpg" id="bg2" alt="photo2">
+                    <img src="photo3.jpg" id="bg3" alt="photo3">
+                </div>
+
+                <div class="sparkle-overlay" id="sparkles"></div>
+
+                <div style="z-index:3" class="center"></div>
+                <h1 style="margin-top:0">Happy Birthday Lalitha 🎉</h1>
+
+                <div class="message-box" id="messageBox">
+                    <div class="message" id="messageText"></div>
+                </div>
+
+                <div style="margin-top:10px;display:flex;gap:10px;z-index:4">
+                    <button class="btn" id="shareBtn">Send a virtual hug 🤗</button>
+                    <button class="small" id="restartBtn">View again</button>
+                </div>
+
+                <!-- Reply card: ask her to write anything that replies to you -->
+                <div class="reply-card" style="margin-top:18px; width:100%; max-width:760px; text-align:center; z-index:3">
+                    <div style="font-weight:600; margin-bottom:8px">Write something for me — reply here ❤️</div>
+                    <textarea id="replyInput" placeholder="Write your message..." rows="4" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); background:transparent; color:#fff; resize:vertical"></textarea>
+                    <div style="margin-top:10px; display:flex; gap:8px; justify-content:center;">
+                        <button class="btn" id="replyBtn">Send Reply</button>
+                        <button class="small" id="clearReplyBtn">Clear</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    </div>
+
+    <!-- floating music control + playlist -->
+    <div class="music-panel" id="musicPanel" style="display:none">
+        <div style="font-weight:700;min-width:98px">Music</div>
+        <div style="display:flex;flex-direction:column;gap:6px" class="music-list" id="musicList"></div>
+        <div style="width:8px"></div>
+        <button id="muteBtn">Mute</button>
+    </div>
+
+    <canvas class="confetti" id="confettiCanvas"></canvas>
+
+    <!-- background audio (place song.mp3 next to this HTML or change src) -->
+    <audio id="bgAudio" src="48371.mp3" loop preload="auto"></audio>
+
+    <script>
+        /* ========== answers ========== */
+        const ANSWER1 = "talimpu";
+        const ANSWER2 = "inter second year";
+
+        /* Final heartfelt message (your provided text) */
+        const FINAL_MESSAGE = `Jeevitham lo naku istamaina vallu chala takkuva mande unnaru andulo lalli okaru. Neekanna naaku edi mukyam kadu , naatho evar
+Friendhip antene appudu kalisi tiragadam , kalisi aadukovadam kadu matladakapoyina okari gurinchi okaru aalochinchadam, kalavakapoyina okarini okaru gurthutechukovadam ani nitho friendship chesake artham aindi.
+Na midha niku chala nammakam undi naku telusu, ni nammakaniki value lekunda chesa adi nakante nike ekuva badha kaligindi ani artam ayindi , apudu nenu niku malli mata evvali anukoledu , evaledu .`;
+
+        const q2hintbtn = document.getElementById('q2hintbtn');
+
+        const messageText = document.getElementById('messageText');
+        const finalBg = document.getElementById('finalBg');
+        const bgImgs = [document.getElementById('bg1'), document.getElementById('bg2'), document.getElementById('bg3')];
+
+        const musicPanel = document.getElementById('musicPanel');
+        const musicList = document.getElementById('musicList');
+        const muteBtn = document.getElementById('muteBtn');
+
+        const confettiCanvas = document.getElementById('confettiCanvas');
+
+        // showPage with video play / pause control
+        function showPage(n) {
+            [page1, page2, page3].forEach(p => p.classList.remove('active'));
+            if (n === 1) page1.classList.add('active');
+            if (n === 2) page2.classList.add('active');
+            if (n === 3) page3.classList.add('active');
+
+            // control background videos (muted so browsers allow autoplay)
+            try {
+                const v1 = document.getElementById('page1Video');
+                const v2 = document.getElementById('page2Video');
+
+                if (v1) {
+                    if (n === 1) {
+                        v1.play().catch(() => {});
+                        v1.style.display = '';
+                    } else {
+                        v1.pause();
+                        v1.style.display = 'none';
+                    }
+                }
+                if (v2) {
+                    if (n === 2) {
+                        v2.play().catch(() => {});
+                        v2.style.display = '';
+                    } else {
+                        v2.pause();
+                        v2.style.display = 'none';
+                    }
+                }
+            } catch (e) {
+                // ignore playback errors
+            }
+        }
+        // DO NOT auto-show page until correct password entered
+        // password gate wiring
+        (function passwordGate() {
+            const PASSWORD = '9177391731';
+            const gate = document.getElementById('pwGate');
+            const inp = document.getElementById('pwInput');
+            const btn = document.getElementById('pwBtn');
+            const cancel = document.getElementById('pwCancel');
+            const hintBtn = document.getElementById('pwHintBtn');
+            const msg = document.getElementById('pwMsg');
+
+            // reveal a gentle hint when requested
+            if (hintBtn) {
+                hintBtn.addEventListener('click', () => {
+                    msg.textContent = "Hint: it's your oldest mobile number.";
+                    showTemporaryHint("Hint shown", 1800);
+                    // remove hint after a short delay so it isn't permanently visible
+                    setTimeout(() => {
+                        msg.textContent = '';
+                    }, 6500);
+                });
+            }
+
+            function unlock() {
+                const v = (inp.value || '').trim();
+                if (v === PASSWORD) {
+                    gate.style.display = 'none';
+                    try {
+                        showPage(1);
+                    } catch (e) {}
+                    // try to play background audio now that user interacted
+                    try {
+                        if (bgAudio) bgAudio.play().catch(() => {});
+                    } catch (e) {}
+                } else {
+                    msg.textContent = 'Incorrect password — try again.';
+                    inp.value = '';
+                    inp.focus();
+                    showTemporaryHint('Incorrect password', 2000);
+                }
+            }
+
+            btn.addEventListener('click', unlock);
+            inp.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') unlock();
+            });
+            cancel.addEventListener('click', () => {
+                // keep gate visible but give brief feedback; you can redirect or close if desired
+                msg.textContent = 'Access cancelled.';
+                setTimeout(() => msg.textContent = '', 1400);
+            });
+            // focus input so user can type immediately
+            setTimeout(() => inp.focus(), 120);
+        })();
+
+        function showPage(n) {
+            [page1, page2, page3].forEach(p => p.classList.remove('active'));
+            if (n === 1) page1.classList.add('active');
+            if (n === 2) page2.classList.add('active');
+            if (n === 3) page3.classList.add('active');
+
+            // control background videos (muted so browsers allow autoplay)
+            try {
+                const v1 = document.getElementById('page1Video');
+                const v2 = document.getElementById('page2Video');
+
+                if (v1) {
+                    if (n === 1) {
+                        v1.play().catch(() => {});
+                        v1.style.display = '';
+                    } else {
+                        v1.pause();
+                        v1.style.display = 'none';
+                    }
+                }
+                if (v2) {
+                    if (n === 2) {
+                        v2.play().catch(() => {});
+                        v2.style.display = '';
+                    } else {
+                        v2.pause();
+                        v2.style.display = 'none';
+                    }
+                }
+            } catch (e) {
+                // ignore playback errors
+            }
+        }
+        showPage(1);
+
+        q1btn.addEventListener('click', () => {
+            const val = (q1input.value || "").trim().toLowerCase();
+            if (!val) {
+                flashInput(q1input);
+                return;
+            }
+            if (val === ANSWER1.toLowerCase()) {
+                showPage(2);
+                playEntranceTone();
+            } else {
+                shake(q1input);
+                showTemporaryHint("Nope — that's not the one. Think about the tiny nickname you whisper.", 3000);
+            }
+        });
+        q1hintbtn.addEventListener('click', () => {
+            q1hint.style.display = q1hint.style.display === 'none' ? 'block' : 'none';
+        });
+
+        q2btn.addEventListener('click', () => {
+            const val = (q2input.value || "").trim().toLowerCase();
+            if (!val) {
+                flashInput(q2input);
+                return;
+            }
+            if (val === ANSWER2.toLowerCase()) {
+                revealFinal();
+            } else {
+                shake(q2input);
+                showTemporaryHint("Close — but not quite. Think about that time I wasn't at home.", 3000);
+            }
+        });
+        q2hintbtn.addEventListener('click', () => {
+            showTemporaryHint("Hint: It was during my inter second year — you missed me then. ❤️", 5000);
+        });
+
+        function revealFinal() {
+            showPage(3);
+            messageText.textContent = "";
+            startTypewriter(FINAL_MESSAGE, messageText, 22, () => {
+                launchConfetti();
+                setupMusicPanel();
+                startBlinkingPhotos();
+            });
+            playEntranceTone();
+        }
+
+        function flashInput(el) {
+            el.style.transition = 'box-shadow 160ms';
+            el.style.boxShadow = '0 0 0 3px rgba(255, 80, 80, 0.15)';
+            setTimeout(() => el.style.boxShadow = '', 220);
+        }
+
+        function shake(el) {
+            el.animate([{
+                transform: 'translateX(0)'
+            }, {
+                transform: 'translateX(-10px)'
+            }, {
+                transform: 'translateX(10px)'
+            }, {
+                transform: 'translateX(0)'
+            }], {
+                duration: 400,
+                iterations: 1
+            });
+        }
+
+        function showTemporaryHint(msg, ms = 2500) {
+            const el = document.createElement('div');
+            el.textContent = msg;
+            el.style.position = 'fixed';
+            el.style.left = '50%';
+            el.style.transform = 'translateX(-50%)';
+            el.style.bottom = '22px';
+            el.style.background = 'linear-gradient(90deg, rgba(0,0,0,0.6), rgba(255,255,255,0.02))';
+            el.style.padding = '10px 14px';
+            el.style.borderRadius = '10px';
+            el.style.zIndex = 9999;
+            el.style.color = '#fff';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), ms);
+        }
+
+        function playEntranceTone() {
+            try {
+                const a = new Audio('data:audio/wav;base64,UklGRuQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQAAAAA=');
+                a.volume = 0.06;
+                a.play().catch(() => { /* some browsers block autoplay */ });
+            } catch (e) {}
+        }
+
+        function startTypewriter(text, node, speed = 30, cb) {
+            let i = 0;
+            (function step() {
+                node.textContent = text.slice(0, i);
+                i++;
+                if (i <= text.length) {
+                    setTimeout(step, speed + Math.random() * 10);
+                } else {
+                    if (cb) cb();
+                }
+            })();
+        }
+
+        musicList.innerHTML = '';
+        ytPlaylist.forEach((t, idx) => {
+            const row = document.createElement('div');
+            const btn = document.createElement('button');
+            btn.textContent = `▶ ${t.title}`;
+            btn.classList.add('small');
+            btn.style.cursor = 'pointer';
+            btn.onclick = () => openYTPlayer(t.id, t.title);
+            row.appendChild(btn);
+            musicList.appendChild(row);
+        });
+        musicPanel.style.display = 'flex';
+        musicPanel.style.display = 'flex';
+
+        function openYTPlayer(videoId, title) {
+            if (videoId.indexOf("VIDEO_ID_") === 0) {
+                alert("Please replace the placeholder YouTube IDs in the code with actual YouTube video IDs for the songs.");
+                return;
+                if (videoId.indexOf("VIDEO_ID_") === 0) {
+                    alert("Please replace the placeholder YouTube IDs in the code with actual YouTube video IDs for the songs.");
+                    return;
+                }
+                const w = 960,
+                    h = 540;
+                const left = (window.screen.width / 2) - (w / 2);
+                const top = (window.screen.height / 2) - (h / 2);
+                window.open(`https://www.youtube.com/watch?v=${videoId}`, title, `width=${w},height=${h},left=${left},top=${top}`);
+            }
+            // preferred starting volume
+            if (bgAudio) bgAudio.volume = 0.45;
+
+            // try to autoplay on load; browsers may block this until a user gesture
+            function tryPlayBg() {
+                if (!bgAudio) return;
+                bgAudio.play().catch(() => {
+                    // autoplay blocked — will resume on user gesture
+                });
+            }
+            document.addEventListener('DOMContentLoaded', tryPlayBg);
+
+            // resume playback on first user interaction if autoplay was blocked
+            function resumeOnGesture() {
+                if (!bgAudio) return;
+                bgAudio.play().catch(() => {});
+                window.removeEventListener('pointerdown', resumeOnGesture);
+                window.removeEventListener('keydown', resumeOnGesture);
+            }
+            window.addEventListener('pointerdown', resumeOnGesture);
+            window.addEventListener('keydown', resumeOnGesture);
+
+            // toggle mute/unmute and update button text
+            muteBtn.addEventListener('click', () => {
+                if (!bgAudio) return;
+                if (bgAudio.muted) {
+                    bgAudio.muted = false;
+                    muteBtn.textContent = 'Mute';
+                    if (bgAudio.paused) bgAudio.play().catch(() => {});
+                } else {
+                    bgAudio.muted = true;
+                    muteBtn.textContent = 'Unmute';
+                }
+            });
+
+            // stop audio when the page unloads
+            window.addEventListener('beforeunload', () => {
+                try {
+                    if (bgAudio) {
+                        bgAudio.pause();
+                        bgAudio.currentTime = 0;
+                    }
+                } catch (e) {}
+            });
+
+            function launchConfetti() {
+                const canvas = confettiCanvas;
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                const ctx = canvas.getContext('2d');
+                const particles = [];
+                const colors = ['#FFD166', '#FFB4A2', '#06D6A0', '#4CC9F0', '#F72585'];
+                for (let i = 0; i < 160; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * -canvas.height,
+                        r: Math.random() * 8 + 4,
+                        c: colors[Math.floor(Math.random() * colors.length)],
+                        d: Math.random() * 3 + 1,
+                        rot: Math.random() * 360
+                    });
+                }
+                let t = 0;
+
+                function step() {
+                    t += 1;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    particles.forEach(p => {
+                        p.y += p.d + Math.sin(t / 10 + p.x / 100);
+                        p.x += Math.sin(t / 20 + p.y / 150);
+                        ctx.save();
+                        ctx.translate(p.x, p.y);
+                        ctx.rotate(p.rot * Math.PI / 180);
+                        ctx.fillStyle = p.c;
+                        ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 0.6);
+                        ctx.restore();
+                        if (p.y > canvas.height + 40) {
+                            p.y = -40;
+                            p.x = Math.random() * canvas.width;
+                        }
+                    });
+                    if (t < 400) requestAnimationFrame(step);
+                    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+                step();
+            }
+
+            /* Blinking photos — default to photo1.jpg..photo3.jpg in same folder */
+            function startBlinkingPhotos() {
+                const defaults = ['photo1.jpg', 'photo2.jpg', 'photo3.jpg'];
+                bgImgs.forEach((img, i) => {
+                    if (!img.src || img.src.endsWith(window.location.pathname)) img.src = defaults[i] || defaults[0];
+                });
+                let idx = 0;
+
+                function show(i) {
+                    bgImgs.forEach((im, j) => im.classList.toggle('show', j === i));
+                    spawnSparkles();
+                }
+                show(0);
+                setInterval(() => {
+                    idx = (idx + 1) % bgImgs.length;
+                    show(idx);
+                }, 3800);
+            }
+
+            function spawnSparkles() {
+                const overlay = document.getElementById('sparkles');
+                overlay.innerHTML = '';
+                for (let i = 0; i < 26; i++) {
+                    const s = document.createElement('div');
+                    s.className = 'sparkle';
+                    const left = Math.random() * 100;
+                    const top = Math.random() * 100;
+                    s.style.left = left + '%';
+                    s.style.top = top + '%';
+                    s.style.opacity = 0.6 + Math.random() * 0.6;
+                    s.style.transform = `scale(${0.6 + Math.random()*1.4})`;
+                    overlay.appendChild(s);
+                    (function(el) {
+                        el.animate([{
+                            transform: el.style.transform,
+                            opacity: el.style.opacity
+                        }, {
+                            transform: `scale(${1.6}) translateY(-18px)`,
+                            opacity: 0
+                        }], {
+                            duration: 1800 + Math.random() * 1400,
+                            iterations: 1,
+                            easing: 'ease-out'
+                        });
+                    })(s);
+                }
+            }
+
+            /* Decorative particles & hearts */
+            (function spawnParticles() {
+                const container = document.getElementById('particles');
+                container.innerHTML = '';
+                for (let i = 0; i < 18; i++) {
+                    const el = document.createElement('div');
+                    el.className = 'spark';
+                    const x = Math.random() * 100;
+                    const y = Math.random() * 100;
+                    el.style.left = x + '%';
+                    el.style.top = y + '%';
+                    el.style.opacity = 0.7 * Math.random() + 0.2;
+                    el.style.transform = `scale(${0.6 + Math.random()*1.5})`;
+                    container.appendChild(el);
+                }
+                for (let i = 0; i < 6; i++) {
+                    const h = document.createElement('div');
+                    h.className = 'floating-heart';
+                    h.innerText = '🖤';
+                    h.style.left = (Math.random() * 80 + 5) + '%';
+                    h.style.top = (Math.random() * 70 + 5) + '%';
+                    h.style.opacity = 0.9;
+                    h.animate([{
+                        transform: 'translateY(0) scale(1)',
+                        opacity: 1
+                    }, {
+                        transform: 'translateY(-26px) scale(1.2)',
+                        opacity: 0.6
+                    }], {
+                        duration: 3000 + Math.random() * 2800,
+                        iterations: Infinity,
+                        delay: Math.random() * 800
+                    });
+                    container.appendChild(h);
+                }
+            })();
+
+            document.getElementById('shareBtn').addEventListener('click', () => {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(location.href).then(() => {
+                        showTemporaryHint("Link copied! You can paste it in a message for her 💌", 3000);
+                    }).catch(() => {
+                        showTemporaryHint("Copy this page URL and share it with her when hosted.", 3000);
+                    });
+                } else {
+                    // fallback for older browsers
+                    try {
+                        const ta = document.createElement('textarea');
+                        ta.value = location.href;
+                        ta.style.position = 'fixed';
+                        ta.style.left = '-9999px';
+                        document.body.appendChild(ta);
+                        ta.select();
+                        document.execCommand('copy');
+                        ta.remove();
+                        showTemporaryHint("Link copied! You can paste it in a message for her 💌", 3000);
+                    } catch (e) {
+                        showTemporaryHint("Copy this page URL and share it with her when hosted.", 3000);
+                    }
+                }
+            });
+            document.getElementById('restartBtn').addEventListener('click', () => {
+                q1input.value = '';
+                q2input.value = '';
+                messageText.textContent = '';
+                showPage(1);
+            });
+
+            /* reply handling: local, client-side only (no server) */
+            (function setupReplyHandlers() {
+                const replyInput = document.getElementById('replyInput');
+                const replyBtn = document.getElementById('replyBtn');
+                const clearReplyBtn = document.getElementById('clearReplyBtn');
+                const messageBox = document.getElementById('messageBox');
+
+                if (!replyInput || !replyBtn) return;
+
+                replyBtn.addEventListener('click', () => {
+                    const val = (replyInput.value || '').trim();
+                    if (!val) {
+                        flashInput(replyInput);
+                        return;
+                    }
+
+                    // show a small preview inside the message box so you can read it later
+                    const wrapper = document.createElement('div');
+                    wrapper.style.marginTop = '12px';
+                    wrapper.style.padding = '12px';
+                    wrapper.style.borderRadius = '10px';
+                    wrapper.style.background = 'rgba(255,255,255,0.03)';
+                    wrapper.style.color = '#fff';
+                    wrapper.style.fontSize = '0.98rem';
+                    wrapper.textContent = val;
+                    messageBox.appendChild(wrapper);
+
+                    // user feedback
+                    showTemporaryHint("Thanks — your reply is saved locally. I'll see it. ❤️", 3000);
+                    console.log('User reply (local):', val);
+
+                    // clear input after send
+                    replyInput.value = '';
+                });
+
+                clearReplyBtn && clearReplyBtn.addEventListener('click', () => {
+                    replyInput.value = '';
+                });
+            })();
+
+            document.getElementById('restartBtn').addEventListener('click', () => {
+                q1input.value = '';
+                q2input.value = '';
+                messageText.textContent = '';
+                showPage(1);
+            });
+
+            /* drag & drop to replace photos without editing code */
+            (function enableDropForPhotos() {
+                const area = document.getElementById('finalBg');
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(name => area.addEventListener(name, e => e.preventDefault()));
+                area.addEventListener('drop', async(e) => {
+                    const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+                    if (files.length === 0) return;
+                    for (let i = 0; i < 3; i++) {
+                        const file = files[i];
+                        if (!file) break;
+                        const data = await fileToDataUrl(file);
+                        bgImgs[i].src = data;
+                    }
+                    showTemporaryHint("Photos updated — they will blink softly in the background ✨", 2500);
+                });
+                async function fileToDataUrl(file) {
+                    return new Promise(res => {
+                        const r = new FileReader();
+                        r.onload = () => res(r.result);
+                        r.readAsDataURL(file);
+                    });
+                }
+            })();
+
+            console.log("Birthday site ready. Place photo1.jpg, photo2.jpg, photo3.jpg next to index.html, or drag them onto the final reveal area. Music buttons open YouTube players.");
+
+            q1input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') q1btn.click();
+            });
+            q2input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') q2btn.click();
+            });
+        }
+    </script>
+</body>
+
+</html>
